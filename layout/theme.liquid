@@ -1,5 +1,5 @@
 <!doctype html>
-<html class="no-js" lang="{{ request.locale.iso_code }}">
+<html class="no-js overflowx" lang="{{ request.locale.iso_code }}">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -191,6 +191,7 @@
     {% endstyle %}
 
     {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'go-cart.css' | asset_url | stylesheet_tag }}
 
     {%- unless settings.type_body_font.system? -%}
       <link rel="preload" as="font" href="{{ settings.type_body_font | font_url }}" type="font/woff2" crossorigin>
@@ -210,7 +211,7 @@
     </script>
   </head>
 
-  <body class="gradient">
+  <body class="gradient overflowx" tabindex="-1">
     <a class="skip-to-content-link button visually-hidden" href="#MainContent">
       {{ "accessibility.skip_to_text" | t }}
     </a>
@@ -253,10 +254,30 @@
         pauseSlideshow: `{{ 'sections.slideshow.pause_slideshow' | t }}`,
         playSlideshow: `{{ 'sections.slideshow.play_slideshow' | t }}`,
       }
+
+      window.gocartIcons = {
+        close: `{% render 'icon-close-small' %}`,
+        arrow: `{% render 'icon-arrow' %}`,
+        plus: `{% render 'icon-plus' %}`,
+        minus: `{% render 'icon-minus' %}`
+      }
+
+      window.currency = {
+        code: '{{ cart.currency.iso_code }}',
+        symbol: '{{ cart.currency.symbol }}'
+      }
     </script>
 
     {%- if settings.predictive_search_enabled -%}
       <script src="{{ 'predictive-search.js' | asset_url }}" defer="defer"></script>
     {%- endif -%}
+
+    {{ 'gocart.js' | asset_url | script_tag }}
+    {%- section 'go-cart' -%}
+
+    <script>
+      var goCart = new GoCart();
+    </script>
+
   </body>
 </html>
