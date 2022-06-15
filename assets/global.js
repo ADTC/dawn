@@ -150,9 +150,21 @@ class QuantityInput extends HTMLElement {
   onButtonClick(event) {
     event.preventDefault();
     const previousValue = this.input.value;
-
     event.target.name === 'plus' ? this.input.stepUp() : this.input.stepDown();
-    if (previousValue !== this.input.value) this.input.dispatchEvent(this.changeEvent);
+    if (previousValue !== this.input.value) {
+      this.updateQuantity(this.input.value)
+      this.input.dispatchEvent(this.changeEvent);
+    }
+  }
+
+  updateQuantity(quantity) {
+    const productForms = document.querySelectorAll(`product-form.product-form, #product-form-installment`);
+    productForms.forEach((productForm) => {
+      // console.log('section:', this.dataset.section)
+      const input = productForm.querySelector('input[name="quantity"]');
+      input.value = quantity;
+      // input.dispatchEvent(new Event('change', { bubbles: true }));
+    }); 
   }
 }
 
@@ -631,7 +643,7 @@ class VariantSelects extends HTMLElement {
   }
 
   updateVariantInput() {
-    const productForms = document.querySelectorAll(`#product-form-${this.dataset.section}, #product-form-installment`);
+    const productForms = document.querySelectorAll(`product-form.product-form, #product-form-installment`);
     productForms.forEach((productForm) => {
       const input = productForm.querySelector('input[name="id"]');
       input.value = this.currentVariant.id;
@@ -678,11 +690,12 @@ class VariantSelects extends HTMLElement {
   }
 
   toggleAddButton(disable = true, text, modifyClass = true) {
-    const productForm = document.getElementById(`product-form-${this.dataset.section}`);
+    // console.log('toggleAddButton')
+    const productForm = document.getElementById(`ProductInfo-${this.dataset.section}`);
     if (!productForm) return;
     const addButton = productForm.querySelector('[name="add"]');
     const addButtonText = productForm.querySelector('[name="add"] > span');
-
+    
     if (!addButton) return;
 
     if (disable) {
@@ -697,7 +710,8 @@ class VariantSelects extends HTMLElement {
   }
 
   setUnavailable() {
-    const button = document.getElementById(`product-form-${this.dataset.section}`);
+    const button = document.querySelector('product-form.product-form');
+    // console.log('setUnavaiolable: ', this.dataset.section)
     const addButton = button.querySelector('[name="add"]');
     const addButtonText = button.querySelector('[name="add"] > span');
     const price = document.getElementById(`price-${this.dataset.section}`);
